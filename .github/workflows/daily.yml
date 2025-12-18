@@ -1,0 +1,31 @@
+name: 每日乐队巡演检查
+
+on:
+  schedule:
+    # 每天北京时间上午 10 点运行 (UTC 2:00)
+    - cron: '0 2 * * *'
+  workflow_dispatch: # 允许手动点击按钮运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 拉取代码
+      uses: actions/checkout@v2
+
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: 安装依赖
+      run: |
+        pip install requests
+
+    - name: 运行监控脚本
+      env:
+        # 如果你申请了 Server酱 Key，请在仓库 Settings -> Secrets 里配置 SC_KEY
+        SC_KEY: ${{ secrets.SC_KEY }}
+      run: |
+        python main.py
